@@ -2,9 +2,10 @@ from app.models import BaseModel
 from app.extensions import db
 
 class Employees(BaseModel):
-    __tablename__ = "employees"
+    __tablename__ = "Employees"
 
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(50))
+    email = db.Column(db.String(50))
     # dd/mm/yyyy
-    date = db.Column(db.String(10))
+    entry_date = db.Column(db.String(10))

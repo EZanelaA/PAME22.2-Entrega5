@@ -11,6 +11,8 @@ class EmployeeSchema(ma.SQLAlchemySchema):
     id = ma.Integer(dump_only = True)
     # nome do funcionário
     username = ma.String(required = True)
+    # email do funcionário
+    email = ma.String(required = True)
     # data de admissão
-    date = ma.String(required = True)
+    entry_date = ma.String(required = True)
 
