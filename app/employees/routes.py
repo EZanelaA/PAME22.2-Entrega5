@@ -18,7 +18,7 @@ employee_api.add_url_rule(
 employee_api.add_url_rule(
     "/employees/<int:employee_id>/products",
     view_func = EmployeeProductController.as_view("employee_product_controller"),
-    methods = ["POST"]
+    methods = ["POST", "GET"]
 )
 
 employee_api.add_url_rule(

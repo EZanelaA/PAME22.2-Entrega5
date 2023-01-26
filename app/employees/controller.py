@@ -69,7 +69,7 @@ class EmployeeDetails(MethodView):
 
 # /employees/<id>/products
 class EmployeeProductController(MethodView):
-    # post
+    # post: o funcionário <id> adiciona um produto em products
     def post(self, employee_id):
         schema = ProductSchema()
         employee = Employees.query.get(employee_id)
@@ -83,6 +83,15 @@ class EmployeeProductController(MethodView):
             return {"ERROR 400": "BAD REQUEST"}, 400
         product.save()
         return schema.dump(product), 201
+    
+    # get: pega todo os itens que o funcionário <id> colocou em products
+    def get (self, employee_id):
+        schema = ProductSchema()
+        employee = Employees.query.get(employee_id)
+        if not employee:
+            return {}, 404
+        product = employee.inserted_products
+        return schema.dump(product, many = True), 200
 
 # /employees/<id>/products/<id>
 class EmployeeProductDetails(MethodView):
