@@ -1,7 +1,7 @@
 from app.extensions import ma
 from .models import Products
 
-class ProductsSchema(ma.SQLAlchemySchema):
+class ProductSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Products
         load_instance = True
@@ -15,3 +15,4 @@ class ProductsSchema(ma.SQLAlchemySchema):
     entry_date = ma.String(required = True)
     # data de validade
     expiration_date = ma.String()
+    inserted_by = ma.Integer()
