@@ -1,11 +1,25 @@
 from flask import request
 from flask.views import MethodView
 from .models import Employees
-from .schemas import EmployeeSchema
+from .schemas import EmployeeSchema, LoginSchema
 from app.products.models import Products
 from app.products.schemas import ProductSchema
 from app.requests.models import Requests
 from app.requests.schemas import RequestSchema
+from flask_jwt_extended import create_access_token, jwt_required
+
+class EmployeeLogin(MethodView):
+    def post(self):
+        schema = LoginSchema()
+        data = request.json
+        employee = Employees.query.filter_by(username = data["username"]).first()
+        if not employee:
+            return {"ERROR": "EMPLOYEE NOT FOUND"}, 404
+        elif not employee.check_password(data["password"]):
+            return {"ERROR": "WRONG PASSWORD"}, 401
+        token = create_access_token(identity = employee.id)
+        return {"employee": schema.dump(employee), "token": token}, 200
+
 
 # /employees
 class EmployeeController(MethodView):
@@ -27,6 +41,7 @@ class EmployeeController(MethodView):
 
 # /employees/<id>
 class EmployeeDetails(MethodView):
+    decorators = [jwt_required()]
     # get
     def get(self, id):
         schema = EmployeeSchema()
@@ -71,6 +86,7 @@ class EmployeeDetails(MethodView):
 
 # /employees/<id>/products
 class EmployeeProductController(MethodView):
+    decorators = [jwt_required()]
     # post: o funcionário <id> adiciona um produto em products
     def post(self, employee_id):
         schema = ProductSchema()
@@ -97,6 +113,7 @@ class EmployeeProductController(MethodView):
 
 # /employees/<id>/products/<id>
 class EmployeeProductDetails(MethodView):
+    decorators = [jwt_required()]
     # put
     def put(self, employee_id, product_id):
         schema = ProductSchema()
@@ -138,6 +155,7 @@ class EmployeeProductDetails(MethodView):
 
 # /employees/<id>/requests
 class EmployeeRequestController(MethodView):
+    decorators = [jwt_required()]
     # post: o funcionário <id> adiciona um pedido em requests
     def post(self, employee_id):
         schema = RequestSchema()
@@ -164,6 +182,7 @@ class EmployeeRequestController(MethodView):
 
 # /employees/<id>/requests/<id>
 class EmployeeRequestDetails(MethodView):
+    decorators = [jwt_required()]
     # put
     def put(self, employee_id, request_id):
         schema = RequestSchema()

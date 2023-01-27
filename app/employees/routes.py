@@ -1,7 +1,13 @@
 from flask import Blueprint
-from .controller import EmployeeController, EmployeeDetails, EmployeeProductController, EmployeeProductDetails, EmployeeRequestController, EmployeeRequestDetails
+from .controller import EmployeeController, EmployeeDetails, EmployeeProductController, EmployeeProductDetails, EmployeeRequestController, EmployeeRequestDetails, EmployeeLogin
 
 employee_api = Blueprint("employee_api", __name__)
+
+employee_api.add_url_rule(
+    "/login",
+    view_func = EmployeeLogin.as_view("employee_login"),
+    methods = ["POST"]
+)
 
 employee_api.add_url_rule(
     "/employees",
