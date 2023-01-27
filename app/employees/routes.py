@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .controller import EmployeeController, EmployeeDetails, EmployeeProductController, EmployeeProductDetails
+from .controller import EmployeeController, EmployeeDetails, EmployeeProductController, EmployeeProductDetails, EmployeeRequestController, EmployeeRequestDetails
 
 employee_api = Blueprint("employee_api", __name__)
 
@@ -24,5 +24,17 @@ employee_api.add_url_rule(
 employee_api.add_url_rule(
     "/employees/<int:employee_id>/products/<int:product_id>",
     view_func = EmployeeProductDetails.as_view("employee_product_details"),
+    methods = ["PUT", "PATCH", "DELETE"]
+)
+
+employee_api.add_url_rule(
+    "/employees/<int:employee_id>/requests",
+    view_func = EmployeeRequestController.as_view("employee_request_controller"),
+    methods = ["POST", "GET"]
+)
+
+employee_api.add_url_rule(
+    "/employees/<int:employee_id>/requests/<int:request_id>",
+    view_func = EmployeeRequestDetails.as_view("employee_request_details"),
     methods = ["PUT", "PATCH", "DELETE"]
 )

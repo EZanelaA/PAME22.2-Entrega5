@@ -8,5 +8,6 @@ class Employees(BaseModel):
     username = db.Column(db.String(50))
     password = db.Column(db.String(50))
     email = db.Column(db.String(50))
-    entry_date = db.Column(db.String(10))
+    hire_date = db.Column(db.String(10))
     inserted_products = db.relationship("Products", backref = "employees")
+    requests_made = db.relationship("Requests", backref = "employees")

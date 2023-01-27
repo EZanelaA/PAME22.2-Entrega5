@@ -4,6 +4,8 @@ from .models import Employees
 from .schemas import EmployeeSchema
 from app.products.models import Products
 from app.products.schemas import ProductSchema
+from app.requests.models import Requests
+from app.requests.schemas import RequestSchema
 
 # /employees
 class EmployeeController(MethodView):
@@ -132,4 +134,71 @@ class EmployeeProductDetails(MethodView):
         elif product not in employee.inserted_products:
             return {}, 401
         product.delete(product)
+        return {}, 204
+
+# /employees/<id>/requests
+class EmployeeRequestController(MethodView):
+    # post: o funcionário <id> adiciona um pedido em requests
+    def post(self, employee_id):
+        schema = RequestSchema()
+        employee = Employees.query.get(employee_id)
+        if not employee:
+            return {"ERROR 404": "NOT FOUND"}, 404
+        data = request.json
+        data["requests_made"] = employee_id
+        try:
+            eRequest = schema.load(data)
+        except:
+            return {"ERROR 400": "BAD REQUEST"}, 400
+        eRequest.save()
+        return schema.dump(eRequest), 201
+    
+    # get: pega todo os pedidos feitos por funcionário <id>
+    def get (self, employee_id):
+        schema = RequestSchema()
+        employee = Employees.query.get(employee_id)
+        if not employee:
+            return {}, 404
+        eRequest = employee.requests_made
+        return schema.dump(eRequest, many = True), 200
+
+# /employees/<id>/requests/<id>
+class EmployeeRequestDetails(MethodView):
+    # put
+    def put(self, employee_id, request_id):
+        schema = RequestSchema()
+        employee = Employees.query.get(employee_id)
+        eRequest = Requests.query.get(request_id)
+        if not employee and not eRequest:
+            return {"ERROR 404": "NOT FOUND"}, 404 
+        data = request.json
+        try:
+            eRequest = schema.load(data, instance = eRequest)
+        except:
+            return {"ERROR 400": "BAD REQUEST"}, 400
+        eRequest.save()
+        return schema.dump(eRequest), 201
+    # patch
+    def patch(self, employee_id, request_id):
+        schema = RequestSchema()
+        employee = Employees.query.get(employee_id)
+        eRequest = Requests.query.get(request_id)
+        if not employee and not eRequest:
+            return {"ERROR 404": "NOT FOUND"}, 404 
+        data = request.json
+        try:
+            eRequest = schema.load(data, instance = eRequest, partial = True)
+        except:
+            return {"ERROR 400": "BAD REQUEST"}, 400
+        eRequest.save()
+        return schema.dump(eRequest), 201
+    # delete
+    def delete(self, employee_id, request_id):
+        employee = Employees.query.get(employee_id)
+        eRequest = Requests.query.get(request_id)
+        if not employee and not eRequest:
+            return {"ERROR 404": "NOT FOUND"}, 404 
+        elif eRequest not in employee.requests_made:
+            return {}, 401
+        eRequest.delete(eRequest)
         return {}, 204

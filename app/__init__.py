@@ -3,6 +3,7 @@ from .extensions import ma, db, mi
 from .config import Config
 from app.employees.routes import employee_api
 from app.products.routes import product_api
+from app.requests.routes import request_api
 
 def create_app():
     app = Flask(__name__)
@@ -12,4 +13,5 @@ def create_app():
     mi.init_app(app, db)
     app.register_blueprint(employee_api)
     app.register_blueprint(product_api)
+    app.register_blueprint(request_api)
     return app
