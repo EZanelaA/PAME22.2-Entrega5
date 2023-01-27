@@ -129,5 +129,7 @@ class EmployeeProductDetails(MethodView):
         product = Products.query.get(product_id)
         if not employee and not product:
             return {"ERROR 404": "NOT FOUND"}, 404 
+        elif product not in employee.inserted_products:
+            return {}, 401
         product.delete(product)
         return {}, 204

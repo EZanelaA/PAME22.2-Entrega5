@@ -10,6 +10,7 @@ class EmployeeSchema(ma.SQLAlchemySchema):
 
     id = ma.Integer(dump_only = True)
     username = ma.String(required = True)
+    password = ma.String(load_only = True, required = True)
     email = ma.String(required = True)
     entry_date = ma.String(required = True)
     inserted_products = ma.List(ma.Nested(ProductSchema), dump_only = True)
